@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    background-image: linear-gradient(to right, rgb(10, 127, 236), rgb(15, 3, 180));
+    color: white;
+    margin: 0;
+    padding: 10px;
+}
+
+h2 {
+    padding-left: 10px;
+}
+
+#search-form {
+    padding-left: 10px;
+}

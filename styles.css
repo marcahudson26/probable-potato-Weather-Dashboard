@@ -10,6 +10,10 @@ h1 {
     padding: 10px;
 }
 
+.list-group {
+    gap: 15px
+}
+
 h2 {
     padding-left: 10px;
 }

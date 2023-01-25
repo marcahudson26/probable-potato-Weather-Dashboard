@@ -21,3 +21,25 @@ h2 {
 #search-form {
     padding-left: 10px;
 }
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+@media (width <=768px) {
+    h2 {
+        text-align: center;
+    }
+
+    .forecast-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (width <=576px) {
+    .forecast-grid {
+        grid-template-columns: 1fr;
+    }
+}

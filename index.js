@@ -2,6 +2,7 @@ const inputButton = document.getElementById("search-button");
 const searchInput = document.getElementById("search-input");
 const historyElem = document.getElementById("history");
 const weatherTodayElem = document.getElementById("today");
+const clearButton = document.getElementById("clear-history");
 
 // this function puts openweathermap data into a new object
 function translateToWeatherObject(data) {
@@ -128,10 +129,7 @@ function getHistory() {
     citys.forEach(city => {
         // add buttons to page
         addHistoryButton(city)
-
     })
-
-
 }
 
 function getCityHistory() {
@@ -139,7 +137,6 @@ function getCityHistory() {
     if (localStorage.getItem("history") === null) {
         localStorage.setItem("history", JSON.stringify([]));
     }
-
     return JSON.parse(localStorage.getItem("history"));
 }
 
@@ -166,22 +163,25 @@ inputButton.addEventListener('click', (event) => {
         return
     }
 
-
     getCurrentWeather(input)
         .then(weather => {
             console.log(weather)
             saveNewCityToHistory(weather.location)
             addHistoryButton(weather.location)
             addCurrentWeather(weather);
-            console.log(weather);
         })
 
     getWeatherForecast(input)
         .then(weathers => {
             add5DayForecast(weathers)
-            console.log(weathers)
         })
 
 });
+clearButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    localStorage.clear();
+    location.reload();
+
+})
 
 getHistory();

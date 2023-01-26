@@ -3,8 +3,7 @@ const searchInput = document.getElementById("search-input");
 const historyElem = document.getElementById("history");
 const weatherTodayElem = document.getElementById("today");
 const clearButton = document.getElementById("clear-history");
-
-// this function puts openweathermap data into a new object
+// this function puts openweather map data into a new object
 function translateToWeatherObject(data) {
     return {
         location: data.name,
@@ -16,7 +15,6 @@ function translateToWeatherObject(data) {
         windSpeed: `${data.wind.speed} m/s`,
     }
 }
-
 // this function gets the current weather and the wether outputs 
 function getCurrentWeather(city) {
     return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=9f3e00ee293195271d6dd820014bfe03`)
@@ -27,7 +25,6 @@ function getCurrentWeather(city) {
 function getNearestMultipleOf3(number) {
     return Math.floor(number / 3.0) * 3
 }
-
 // gets current and future weather 
 function getWeatherForecast(city) {
     return fetch(`https://api.openweathermap.org/data/2.5/forecast?appid=9f3e00ee293195271d6dd820014bfe03&q=${city}&units=metric`)
@@ -36,7 +33,6 @@ function getWeatherForecast(city) {
             const forecasts = []
             for (let i = 0; i < data.list.length; i++) {
                 const weather = data.list[i];
-
                 // can't use daily api since it need premium account
                 // do using 3 hour api but only want one weather reading a day
                 const isSameTimeAsNow = new Date(weather.dt_txt).getHours() === getNearestMultipleOf3(new Date().getHours())
@@ -47,13 +43,10 @@ function getWeatherForecast(city) {
             return forecasts
         })
 }
-
 // render current weather to page
 function addCurrentWeather(weather) {
-
     // remove class d-none from #today
     document.querySelector("#today").classList.remove("d-none")
-
     // create element for html
     // append to #today
     document.querySelector("#today").innerHTML = `
@@ -76,23 +69,14 @@ function addCurrentWeather(weather) {
             </div>
         </div>
     `;
-
-    console.log(weather);
 }
-
 // render 5 day forecasts on page
 function add5DayForecast(weathers) {
-
     // remove all children from .forecast-grid so previous weather not showing
     document.querySelector(".forecast-grid").innerHTML = "";
-
     // remove class d-none from #forecast
     document.querySelector("#forecast").classList.remove("d-none")
-
-    // loop
-    //    create element for html
-    //    append element to .forecast-grid
-
+    // this loops and renders the cards to the 5 day forecast 
     weathers.forEach(weather => {
         const card = document.createElement("div");
         card.innerHTML += `
@@ -118,12 +102,13 @@ function add5DayForecast(weathers) {
         document.querySelector(".forecast-grid").append(card)
     })
 }
-
+// this adds history buttons to the html
 function addHistoryButton(city) {
     const button = document.createElement("button")
     button.textContent = city
     button.classList.add("btn", "btn-secondary", "history-button")
     button.dataset.id = city
+    // if a history button is presses=d this renders the corresponding weather to the cards
     button.addEventListener('click', (event) => {
         event.preventDefault()
 
@@ -140,7 +125,7 @@ function addHistoryButton(city) {
     })
     historyElem.prepend(button)
 }
-
+// this function control's history 
 function getHistory() {
     const citys = getCityHistory()
 
@@ -160,31 +145,26 @@ function getCityHistory() {
 
 function saveNewCityToHistory(city) {
     // make sure something is in storage
-
     if (localStorage.getItem("history") === null) {
         localStorage.setItem("history", JSON.stringify([]));
     }
-
     // get history array from localstorage
     const history = JSON.parse(localStorage.getItem("history"));
-
     // add new city
     history.push(city);
-
     // save new history array in localstorage
     localStorage.setItem("history", JSON.stringify(history))
 }
-
+// this checks if the city entered is already in local storage and if it is wont allow another to be added to storage
 function doesCityExistInHistory(city) {
     const historyString = localStorage.getItem("history")
     if (!historyString) {
         return false;
     }
-
     const history = JSON.parse(historyString);
     return history.includes(city)
 }
-
+// this is the search input click event 
 inputButton.addEventListener('click', (event) => {
     event.preventDefault();
     const input = document.querySelector('#search-input').value;
@@ -207,6 +187,7 @@ inputButton.addEventListener('click', (event) => {
         })
 
 });
+// this is the click event for the clear local history button and will clear the local storage and page reload 
 clearButton.addEventListener('click', (event) => {
     event.preventDefault();
     localStorage.clear();

@@ -7,7 +7,7 @@ const weatherTodayElem = document.getElementById("today");
 function translateToWeatherObject(data) {
     return {
         location: data.name,
-        icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
+        icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
         description: data.weather[0].description,
         date: new Date(data.dt * 1000).toLocaleDateString("en-GB"),
         temp: `${data.main.temp}°C`,
@@ -23,6 +23,10 @@ function getCurrentWeather(city) {
         .then(weather => translateToWeatherObject(weather))
 }
 
+function getNearestMultipleOf3(number) {
+    return Math.floor(number / 3.0) * 3
+}
+
 // gets current and future weather 
 function getWeatherForecast(city) {
     return fetch(`https://api.openweathermap.org/data/2.5/forecast?appid=9f3e00ee293195271d6dd820014bfe03&q=${city}&units=metric`)
@@ -31,8 +35,11 @@ function getWeatherForecast(city) {
             const forecasts = []
             for (let i = 0; i < data.list.length; i++) {
                 const weather = data.list[i];
-                // only get midday weather each day
-                if (new Date(weather.dt_txt).getHours() === 12) {
+
+                // can't use daily api since it need premium account
+                // do using 3 hour api but only want one weather reading a day
+                const isSameTimeAsNow = new Date(weather.dt_txt).getHours() === getNearestMultipleOf3(new Date().getHours())
+                if (isSameTimeAsNow) {
                     forecasts.push(translateToWeatherObject(weather))
                 }
             }
@@ -42,81 +49,55 @@ function getWeatherForecast(city) {
 
 // render current weather to page
 function addCurrentWeather(weather) {
-    // Example:
-    // {
-    //     "location": "London",
-    //     "icon": "https://openweathermap.org/img/wn/04n.png",
-    //     "description": "overcast clouds",
-    //     "date": "26/01/2023",
-    //     "temp": "5.01°C",
-    //     "humidity": "94%",
-    //     "windSpeed": "3.6 meter/sec"
-    // }
-
-    // example html 
-    // <div class="card text-center w-100">
-    //     <div class="card-body">
-    //         <h5 class="card-title">date</h5>
-    //         <img src="https://openweathermap.org/img/wn/04d@2x.png" alt="Broken clouds">
-    //         <p class="card-text">temp</p>
-    //         <p>wind</p>
-    //         <p>humidity</p>
-    //     </div>
-    // </div>
-
-    // remove all children to make sure previous weather not showing
 
     // remove class d-none from #today
+    document.querySelector("#today").classList.remove("d-none")
 
     // create element for html
     // append to #today
+    document.querySelector("#today").innerHTML = `
+        <div class="card text-center w-100">
+            <div class="card-body">
+                <h5 class="card-title">${weather.location}: ${weather.date}</h5>
+                <img src="${weather.icon}" alt="Broken clouds">
+                <p class="card-text">${weather.temp}</p>
+                <p>${weather.windSpeed}</p>
+                <p>${weather.humidity}</p>
+            </div>
+        </div>
+    `;
 
     console.log(weather);
 }
 
 // render 5 day forecasts on page
 function add5DayForecast(weathers) {
-    // Example (array):
-    // [
-    //   {
-    //     "icon": "https://openweathermap.org/img/wn/04n.png",
-    //     "description": "overcast clouds",
-    //     "date": "26/01/2023",
-    //     "temp": "5.01°C",
-    //     "humidity": "94%",
-    //     "windSpeed": "3.6 meter/sec"
-    //   },
-    //   {
-    //     "icon": "https://openweathermap.org/img/wn/04n.png",
-    //     "description": "overcast clouds",
-    //     "date": "27/01/2023",
-    //     "temp": "6.01°C",
-    //     "humidity": "80%",
-    //     "windSpeed": "3.6 meter/sec"
-    //   }
-    //]
-
-    // Example html of each forecast
-    // <div class="card text-center bg-secondary text-white">
-    //     <div class="card-body">
-    //     <h5 class="card-title">date</h5>
-    //     <img src="https://openweathermap.org/img/wn/04d.png" alt="Broken clouds">
-    //     <p class="card-text">temp</p>
-    //     <p>wind</p>
-    //     <p>humidity</p>
-    //     </div>
-    // </div>
-
 
     // remove all children from .forecast-grid so previous weather not showing
+    document.querySelector(".forecast-grid").innerHTML = "";
 
     // remove class d-none from #forecast
+    document.querySelector("#forecast").classList.remove("d-none")
 
     // loop
     //    create element for html
     //    append element to .forecast-grid
 
-    console.log(weathers)
+    weathers.forEach(weather => {
+        const card = document.createElement("div");
+        card.innerHTML += `
+            <div class="card text-center bg-secondary text-white">
+                <div class="card-body">
+                <h5 class="card-title">${weather.date}</h5>
+                <img src="${weather.icon}" alt="Broken clouds">
+                <p class="card-text">${weather.temp}</p>
+                <p>${weather.windSpeed}</p>
+                <p>${weather.humidity}</p>
+                </div>
+            </div>
+        `
+        document.querySelector(".forecast-grid").append(card)
+    })
 }
 
 function addHistoryButton(city) {

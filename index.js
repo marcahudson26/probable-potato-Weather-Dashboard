@@ -13,7 +13,7 @@ function translateToWeatherObject(data) {
         date: new Date(data.dt * 1000).toLocaleDateString("en-GB"),
         temp: `${data.main.temp}°C`,
         humidity: `${data.main.humidity}%`,
-        windSpeed: `${data.wind.speed} meter/sec`,
+        windSpeed: `${data.wind.speed} m/s`,
     }
 }
 
@@ -59,11 +59,20 @@ function addCurrentWeather(weather) {
     document.querySelector("#today").innerHTML = `
         <div class="card text-center w-100">
             <div class="card-body">
-                <h5 class="card-title">${weather.location}: ${weather.date}</h5>
-                <img src="${weather.icon}" alt="Broken clouds">
-                <p class="card-text">${weather.temp}</p>
-                <p>${weather.windSpeed}</p>
-                <p>${weather.humidity}</p>
+                <h5 class="card-title">
+                    ${weather.location}: ${weather.date}
+                </h5>
+                <img src="${weather.icon}" alt="${weather.description}">
+                <p class="card-text">
+                <span class="material-icons align-bottom">device_thermostat</span>
+                    ${weather.temp}</p>
+                <p>
+                <span class="material-icons align-bottom">air</span>
+                    ${weather.windSpeed}</p>
+                <p>
+                <span class="material-symbols-outlined align-bottom">humidity_mid</span>
+                    ${weather.humidity} humidity
+                </p>
             </div>
         </div>
     `;
@@ -90,10 +99,19 @@ function add5DayForecast(weathers) {
             <div class="card text-center bg-secondary text-white">
                 <div class="card-body">
                 <h5 class="card-title">${weather.date}</h5>
-                <img src="${weather.icon}" alt="Broken clouds">
-                <p class="card-text">${weather.temp}</p>
-                <p>${weather.windSpeed}</p>
-                <p>${weather.humidity}</p>
+                <img src="${weather.icon}" alt="${weather.description}">
+                <p class="card-text">
+                    <span class="material-icons align-bottom">device_thermostat</span>
+                    ${weather.temp}
+                </p>
+                <p>
+                    <span class="material-icons align-bottom">air</span>
+                    ${weather.windSpeed}
+                </p>
+                <p>
+                    <span class="material-symbols-outlined align-bottom">humidity_mid</span>
+                    ${weather.humidity} humidity
+                </p>
                 </div>
             </div>
         `
@@ -142,6 +160,7 @@ function getCityHistory() {
 
 function saveNewCityToHistory(city) {
     // make sure something is in storage
+
     if (localStorage.getItem("history") === null) {
         localStorage.setItem("history", JSON.stringify([]));
     }
@@ -156,6 +175,16 @@ function saveNewCityToHistory(city) {
     localStorage.setItem("history", JSON.stringify(history))
 }
 
+function doesCityExistInHistory(city) {
+    const historyString = localStorage.getItem("history")
+    if (!historyString) {
+        return false;
+    }
+
+    const history = JSON.parse(historyString);
+    return history.includes(city)
+}
+
 inputButton.addEventListener('click', (event) => {
     event.preventDefault();
     const input = document.querySelector('#search-input').value;
@@ -165,9 +194,10 @@ inputButton.addEventListener('click', (event) => {
 
     getCurrentWeather(input)
         .then(weather => {
-            console.log(weather)
-            saveNewCityToHistory(weather.location)
-            addHistoryButton(weather.location)
+            if (!doesCityExistInHistory(weather.location)) {
+                saveNewCityToHistory(weather.location)
+                addHistoryButton(weather.location)
+            }
             addCurrentWeather(weather);
         })
 

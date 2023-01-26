@@ -51,7 +51,7 @@
       </aside>
 
       <div class="col-lg-9 pb-3">
-        <section id="today" class="my-3" role="region" aria-live="polite">
+        <section id="today" class="my-3 d-none" role="region" aria-live="polite">
           <div class="card text-center w-100">
             <div class="card-body">
               <h5 class="card-title">date</h5>
@@ -63,7 +63,7 @@
           </div>
         </section>
 
-        <section id="forecast" role="region" aria-live="polite">
+        <section id="forecast" class="d-none" role="region" aria-live="polite">
           <h2>5-Day forecast</h2>
 
           <div class="forecast-grid">
@@ -118,10 +118,6 @@
     </div>
   </div>
 
-  <!-- Moment.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-  <!-- jQuery -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="./index.js"></script>
 </body>
 

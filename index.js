@@ -52,20 +52,70 @@ function addCurrentWeather(weather) {
     //     "humidity": "94%",
     //     "windSpeed": "3.6 meter/sec"
     // }
+
+    // example html 
+    // <div class="card text-center w-100">
+    //     <div class="card-body">
+    //         <h5 class="card-title">date</h5>
+    //         <img src="https://openweathermap.org/img/wn/04d@2x.png" alt="Broken clouds">
+    //         <p class="card-text">temp</p>
+    //         <p>wind</p>
+    //         <p>humidity</p>
+    //     </div>
+    // </div>
+
+    // remove all children to make sure previous weather not showing
+
+    // remove class d-none from #today
+
+    // create element for html
+    // append to #today
+
     console.log(weather);
 }
 
 // render 5 day forecasts on page
-function addForecasts(weathers) {
+function add5DayForecast(weathers) {
     // Example (array):
-    // [{
+    // [
+    //   {
     //     "icon": "https://openweathermap.org/img/wn/04n.png",
     //     "description": "overcast clouds",
     //     "date": "26/01/2023",
     //     "temp": "5.01°C",
     //     "humidity": "94%",
     //     "windSpeed": "3.6 meter/sec"
-    // }]
+    //   },
+    //   {
+    //     "icon": "https://openweathermap.org/img/wn/04n.png",
+    //     "description": "overcast clouds",
+    //     "date": "27/01/2023",
+    //     "temp": "6.01°C",
+    //     "humidity": "80%",
+    //     "windSpeed": "3.6 meter/sec"
+    //   }
+    //]
+
+    // Example html of each forecast
+    // <div class="card text-center bg-secondary text-white">
+    //     <div class="card-body">
+    //     <h5 class="card-title">date</h5>
+    //     <img src="https://openweathermap.org/img/wn/04d.png" alt="Broken clouds">
+    //     <p class="card-text">temp</p>
+    //     <p>wind</p>
+    //     <p>humidity</p>
+    //     </div>
+    // </div>
+
+
+    // remove all children from .forecast-grid so previous weather not showing
+
+    // remove class d-none from #forecast
+
+    // loop
+    //    create element for html
+    //    append element to .forecast-grid
+
     console.log(weathers)
 }
 
@@ -85,7 +135,7 @@ function addHistoryButton(city) {
 
         getWeatherForecast(city)
             .then(weathers => {
-                addForecasts(weathers)
+                add5DayForecast(weathers)
             })
     })
     historyElem.prepend(button)
@@ -147,7 +197,7 @@ inputButton.addEventListener('click', (event) => {
 
     getWeatherForecast(input)
         .then(weathers => {
-            addForecasts(weathers)
+            add5DayForecast(weathers)
             console.log(weathers)
         })
 

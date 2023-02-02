@@ -31,6 +31,7 @@ function getWeatherForecast(city) {
         .then(response => response.json())
         .then(data => {
             const forecasts = []
+
             for (let i = 0; i < data.list.length; i++) {
                 const weather = data.list[i];
                 // can't use daily api since it need premium account
@@ -196,3 +197,21 @@ clearButton.addEventListener('click', (event) => {
 })
 
 getHistory();
+
+function getLocation(place) {
+    return fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${place}&type=city&format=json&apiKey=${apiKey}`)
+        .then(response => response.json())
+        .then(result => result.results[0].place_id);
+}
+
+function getRestaurants(placeId) {
+    return fetch(`https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=place:${placeId}&limit=20&apiKey=${apiKey}`)
+        .then(response => response.json())
+        .then(result => result.features.map(x => x.properties.name).filter(x => x))
+}
+
+getLocation(userInput).then(placeId => {
+    getRestaurants(placeId).then(restaurants => {
+        console.log(restaurants)
+    })
+})
